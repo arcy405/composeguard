@@ -1,0 +1,52 @@
+name: ComposeGuard Config Review
+
+on:
+  pull_request:
+    paths:
+      - "**/docker-compose*.yml"
+      - "**/docker-compose*.yaml"
+      - "**/Dockerfile"
+      - "**/*.dockerfile"
+      - "**/nginx*.conf"
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start reviewer API
+        run: |
+          npm run dev > /tmp/composeguard.log 2>&1 &
+          sleep 3
+
+      - name: Collect changed config files
+        id: changed
+        run: |
+          FILES=$(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.sha }}" | \
+            awk '/docker-compose.*\.ya?ml$|Dockerfile$|\.dockerfile$|nginx.*\.conf$/ {print}')
+          echo "files<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$FILES" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Run config review
+        if: steps.changed.outputs.files != ''
+        run: |
+          echo "Reviewing changed files:"
+          echo "${{ steps.changed.outputs.files }}"
+          node ./bin/devops-ai.js review ${{ steps.changed.outputs.files }} --api http://127.0.0.1:3000 --fail-on high
+
+      - name: Print API log on failure
+        if: failure()
+        run: cat /tmp/composeguard.log
+

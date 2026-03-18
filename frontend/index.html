@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ComposeGuard</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="bg-glow bg-glow-a"></div>
+    <div class="bg-glow bg-glow-b"></div>
+    <main class="container">
+      <header class="hero panel">
+        <div>
+          <span class="badge">ComposeGuard</span>
+          <h1>ComposeGuard</h1>
+          <p class="subtitle">
+            Analyze Docker and Nginx configs with deterministic rules, AI insights,
+            patch previews, and workflow visualization.
+          </p>
+        </div>
+      </header>
+
+      <section class="panel">
+        <h2>Upload Config Files</h2>
+        <div class="upload-row">
+          <input id="fileInput" type="file" multiple />
+          <select id="profileSelect">
+            <option value="startup">Startup profile</option>
+            <option value="production" selected>Production profile</option>
+            <option value="enterprise">Enterprise profile</option>
+          </select>
+          <input id="issueIdsInput" type="text" placeholder="Apply issue IDs (comma-separated, optional)" />
+          <label class="check-inline">
+            <input id="safeOnlyToggle" type="checkbox" checked />
+            safe-only apply
+          </label>
+          <button id="analyzeBtn">Analyze</button>
+          <button id="applyBtn" class="secondary">Apply Fixes</button>
+        </div>
+        <p id="status"></p>
+      </section>
+
+      <div class="grid-two">
+        <section class="panel">
+          <h2>Scores</h2>
+          <div id="scores" class="scores"></div>
+        </section>
+
+        <section class="panel">
+          <h2>Workflow Snapshot</h2>
+          <div id="workflowOverview" class="workflow-overview"></div>
+        </section>
+      </div>
+
+      <section class="panel">
+        <h2>DevOps Workflow Visualizer</h2>
+        <div id="workflowStages" class="workflow-stages"></div>
+        <h3>Issue Hotspots</h3>
+        <div id="workflowHotspots"></div>
+        <h3>Recommended Workflow</h3>
+        <ol id="workflowPlan"></ol>
+      </section>
+
+      <section class="panel">
+        <div class="section-head">
+          <h2>Issues</h2>
+          <div class="toolbar">
+            <select id="severityFilter">
+              <option value="all">All severities</option>
+              <option value="critical">Critical</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+            <input id="issueSearch" type="text" placeholder="Search issue text..." />
+          </div>
+        </div>
+        <div id="issues"></div>
+      </section>
+
+      <div class="grid-two">
+        <section class="panel">
+          <h2>Fixes</h2>
+          <div id="fixes"></div>
+        </section>
+
+        <section class="panel">
+          <h2>Applied Files</h2>
+          <div id="scoreDelta"></div>
+          <div id="skippedIssues"></div>
+          <div id="appliedFiles"></div>
+        </section>
+      </div>
+
+      <section class="panel">
+        <h2>File Patches</h2>
+        <div id="fileFixes"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
+

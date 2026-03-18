@@ -1,0 +1,20 @@
+services:
+  app:
+    image: myapp:1.0.0
+    ports:
+      - '8080:80'
+    restart: always
+    healthcheck:
+      test:
+        - CMD
+        - 'true'
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    read_only: true
+    mem_limit: 512m
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
